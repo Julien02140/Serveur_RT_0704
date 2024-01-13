@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>template accueil</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Inscription</h1>
+    <form method="POST" action="/register">
+        <label for="username">Nom d'utilisateur :</label>
+        <input type="text" id="username" name="username" required><br>
+
+        <label for="password">Mot de passe :</label>
+        <input type="password" id="password" name="password" required><br>
+
+        <label for="confirm_password">Confirmer le mot de passe :</label>
+        <input type="password" id="confirm_password" name="confirm_password" required><br>
+
+        <button type="submit">S'inscrire</button>
+    </form>
+
+    <p>Déjà un compte ? <a href="/login">Se connecter</a></p>
+</body>
+</html>
