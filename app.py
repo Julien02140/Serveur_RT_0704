@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
-API_URL = "http://localhost:3000/api/"
+import requests
+API_URL = "http://localhost:5000/api/"
 
 helloworld = Flask(__name__)
 @helloworld.route("/")
@@ -17,11 +18,20 @@ def page_register():
 @helloworld.route("/verif_login", methods=['POST'])
 def verif_login():
     #recuperation des donnee de la requete post, c est en json.
-    donnee = request.form 
-    #recuperation un à un
-    pseudo = donnee.get("username")
-    password = donnee.get("password")
-    return pseudo
+    donnee = request.form
+    print(donnee)
+    reponse = requests.post(API_URL + "verif_user",donnee)
+    if reponse.status_code == 200:
+        reponse_api = reponse.json().get("message")
+        if reponse_api == "Connexion OK":
+            #recuperation un à un
+            pseudo = donnee.get("username")
+            password = donnee.get("password")
+            return "bienvenu " + pseudo
+        else:
+            return "pseudo ou mot de passe faux"
+    else:
+        return "Echec de la requete vers l'api"
 
     # Faites une requête à l'API pour qu'elle verifie si le peudo et le mdp est correct
     """
