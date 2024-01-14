@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, session, url_for, redirect,g
+from flask import Flask, render_template, request, jsonify, session, url_for, redirect,g, flash
 import requests
 import os
 API_URL = "http://localhost:5000/api/"
@@ -10,7 +10,7 @@ def run():
     return render_template('index.html')
 
 @app.route("/page_login", methods=["GET","POST"])
-def page_login():        
+def page_login():      
     return render_template('login.html')
 
 @app.before_request #cela pemert à la fonction dessous d'être appelé quand il y a une requête
@@ -35,6 +35,29 @@ def account():
 @app.route("/page_register")
 def page_register():
     return render_template('register.html')
+
+@app.route("/register", methods=['POST'])
+def register():
+    session.pop("utilisateur",None)
+    #recuperation des donnee de la requete post, c est en json.
+    donnee = request.form
+    #verification des champs, si ils sont vides
+    for champ, valeur in donnee.items():
+        if valeur.strip() == "":
+            return "Un champ est vide"
+    #On regarde aussi la confirmation du mot de passe
+    password = donnee.get("password")
+    confirm_password = donnee.get("confirm_password")
+    if password != confirm_password:
+        return "le mot de passe de confirmation n'est pas le même"
+    
+    """reponse = requests.post(API_URL + "register_user",donnee)
+    if reponse.status_code == 200:
+        reponse_api = reponse.json().get("message")"""
+    flash("compte cree",'success')
+    return redirect(url_for("page_login"))
+    #else:
+      #  return "Echec de l'inscription, problème de connexion"
 
 @app.route("/verif_login", methods=['POST'])
 def verif_login():
