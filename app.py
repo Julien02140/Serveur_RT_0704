@@ -25,10 +25,24 @@ def supprime_session():
     flash("Vous êtes deconnecté","success")
     return render_template("login.html")
 
-@app.route("/account")
-def account():
+@app.route("/home") #home page de l'application
+def home():
+    api_populaire = API_URL + "films_populaires"
     if g.utilisateur:
-        return render_template("account.html",utilisateur=session["utilisateur"])
+        response = requests.get(api_populaire)
+        if response.status_code == 200:
+            listes_films = []
+            for film in response.json():
+                title = film['title']
+                id = film['id']
+                image = "https://image.tmdb.org/t/p/w342" + film['poster_path']
+                film_final = {
+                    "id": id,
+                    "title": title,
+                    "image": image
+                }
+                listes_films.append(film_final)
+            return render_template("home.html",utilisateur=session["utilisateur"],films_populaires=listes_films)
     return redirect(url_for("run"))
 
 
@@ -78,8 +92,8 @@ def verif_login():
             password = donnee.get("password")
             #cela supprime la session actuelle
             session["utilisateur"] = pseudo
-            #url_for retourne sur la fonction qui s'appelle account, pas la route
-            return redirect(url_for("account"))
+            #url_for retourne sur la fonction qui s'appelle home, pas la route
+            return redirect(url_for("home"))
         else:
             return "pseudo ou mot de passe faux"
     else:

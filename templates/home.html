@@ -50,7 +50,31 @@
             <button type="submit"
             class="btn btn-primary">rechercher</button>
         </form>
-    </nav>
+      </nav>
+      
+      <h1>Bienvenue {{ utilisateur }} sur la page d'accueil</h1>
+      <p>Les films populaires du moment</p>
+      {% if films_populaires %}
+        <ul>
+          {% for film in films_populaires %}
+          <li>
+              <h3>{{ film.title }}</h3>
+              <p>ID: {{ film.id }}</p>
+              <img src="{{ film.image }}" alt="{{ film.title }} Poster">
+          </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>Aucun film disponible pour le moment.</p>
+      {% endif %}
+
+        <!--
+          si je fais par exemple curl https://api.themoviedb.org/3/movie/500/videos?api_key=8770fea03d8b0d550c4b50be1656d5cb. J'obtiens un json, mais c'est la colonne key qui
+          donne l'id de la video, j'obtiens la key : RKQIGvULZCI, il me suffit de completer ensuite le lien youtube et j'ai la vidéo en obtenant l'api
+          <iframe width="560" height="315" src="https://www.youtube.com/embed/RKQIGvULZCI" frameborder="0" allowfullscreen></iframe>-->
+   
+
+    
 
 
 
