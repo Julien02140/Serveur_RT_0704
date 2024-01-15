@@ -22,7 +22,8 @@ def avant_requete():
 @app.route("/supprime_session")
 def supprime_session():
     session.pop("utilisateur", None)
-    return render_template("page_login.html")
+    flash("Vous êtes deconnecté","success")
+    return render_template("login.html")
 
 @app.route("/account")
 def account():
@@ -51,13 +52,16 @@ def register():
     if password != confirm_password:
         return "le mot de passe de confirmation n'est pas le même"
     
-    """reponse = requests.post(API_URL + "register_user",donnee)
+    reponse = requests.post(API_URL + "register_user",donnee)
     if reponse.status_code == 200:
-        reponse_api = reponse.json().get("message")"""
-    flash("compte cree",'success')
-    return redirect(url_for("page_login"))
-    #else:
-      #  return "Echec de l'inscription, problème de connexion"
+        reponse_api = reponse.json().get("message")
+        if(reponse_api == "Utilisateur ajouté"): 
+            flash("compte cree",'success')
+            return redirect(url_for("page_login"))
+        else:
+            return "problème sur l'api"
+    else:
+      return "Echec de l'inscription, problème de connexion"
 
 @app.route("/verif_login", methods=['POST'])
 def verif_login():
