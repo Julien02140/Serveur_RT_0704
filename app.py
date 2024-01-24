@@ -179,7 +179,13 @@ def recherche_film():
         donne = request.form
         mot = donne.get("recherche")
         print("mot",mot)
-        return "ok"
+        api_recherche_film = API_URL + f"recherche_film/{mot}"
+        reponse = requests.get(api_recherche_film)
+        if reponse.status_code == 200:
+            liste_films = reponse.json().get("liste_films")
+            return render_template("home.html",films_populaires=liste_films)
+        else:
+            return "erreur"
 
     
 if __name__ == "__main__":
