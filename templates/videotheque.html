@@ -10,6 +10,9 @@
 {% if films %}
     <p>vos films </p>
         {% for film in films %}
+            <a href="/supprimer_film/{{film.id}}">
+                <button type="button">supprimer le film</button>
+            </a>
             <li>
                 <h3>{{ film.title }}</h3>
                 <p>ID: {{ film.id }}</p>

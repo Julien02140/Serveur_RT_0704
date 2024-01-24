@@ -45,8 +45,8 @@
                   </div>     
             </ul> 
         </div>
-        <form class="d-flex">
-            <input type="text" class="form-control me-2">
+        <form class="d-flex" method="POST" action="{{url_for('recherche_film')}}">
+            <input type="text" class="form-control me-2" id="recherche" name="recherche">
             <button type="submit"
             class="btn btn-primary">rechercher</button>
         </form>

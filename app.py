@@ -142,6 +142,18 @@ def verif_login():
         verif = response.txt
         if verif == "OK":
             return """
+    
+@app.route("/supprimer_film/<int:film_id>")
+def supprimer_film(film_id):
+    print("SUPPRIME LE FILM")
+    user_id = session["id"]
+    api_supprimer_film = API_URL + f"supprimer_film/{user_id}/{film_id}"
+    reponse = requests.get(api_supprimer_film)
+    if reponse.status_code == 200:
+        flash("film supprimer",'success')
+        return redirect(url_for("home"))
+
+
 
 @app.route("/ajout_film/<int:film_id>")
 def ajout_film(film_id):
@@ -149,14 +161,26 @@ def ajout_film(film_id):
     api_trouver_film = API_URL + f"ajout_film/{user_id}/{film_id}"
     reponse = requests.get(api_trouver_film)
     if reponse.status_code == 200:
-        print("film ajouté")
-        flash("film ajouté",'success')
-            
+        if reponse.json().get("message") == "Deja dans la videotheque":
+            print("film deja dans la videotheque")
+            flash("film deja dans la videotheque",'success')
+        else:
+            print("film ajouté")
+            flash("film ajouté",'success')         
     else:
         print("film introuvable")
         flash("film introuvable",'success')
 
     return redirect(url_for("home"))
+
+@app.route("/recherche_film", methods = ['POST'])
+def recherche_film():
+    if request.method == 'POST':
+        donne = request.form
+        mot = donne.get("recherche")
+        print("mot",mot)
+        return "ok"
+
     
 if __name__ == "__main__":
     app.run(host="0.0.0.0",port=int("3000"),debug=True)
