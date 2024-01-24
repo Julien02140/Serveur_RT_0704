@@ -18,10 +18,12 @@ def avant_requete():
     g.utilisateur = None
     if "utilisateur" in session:
         g.utilisateur = session["utilisateur"]
+        g.id = session["id"]
 
 @app.route("/supprime_session")
 def supprime_session():
     session.pop("utilisateur", None)
+    session.pop("id", None)
     flash("Vous êtes deconnecté","success")
     return render_template("login.html")
 
@@ -42,7 +44,7 @@ def home():
                     "image": image
                 }
                 listes_films.append(film_final)
-            return render_template("home.html",utilisateur=session["utilisateur"],films_populaires=listes_films)
+            return render_template("home.html",utilisateur=session["utilisateur"],id=session["id"],films_populaires=listes_films)
     return redirect(url_for("run"))
 
 @app.route('/description/<int:film_id>')
@@ -57,7 +59,26 @@ def description_film(film_id):
         print("poster_path",film['poster_path'])
         return render_template("description_film.html",film=film)
 
-
+@app.route('/videotheque/<int:id>')
+def get_videotheque(id):
+    api_videotheque = API_URL + f"ma_videotheque/{id}"
+    reponse1 = requests.get(api_videotheque)
+    liste_films = []
+    if reponse1.status_code == 200:
+        liste_films_id = reponse1.json()["liste_films"]
+        print("voici les id : ",liste_films_id)
+        for film_id in liste_films_id:
+            print("film_id", film_id)
+            api_trouver_film = API_URL + f"trouver_film/{film_id}"
+            reponse2 = requests.get(api_trouver_film)
+            if reponse2.status_code == 200:
+                liste_films.append(reponse2.json())
+                print("Film ajouté à la liste")
+            else:
+                print("film introuvable")
+        return render_template("videotheque.html",films=liste_films) 
+    else:
+      return "Echec de la requete"
 
 @app.route("/page_register")
 def page_register():
@@ -66,6 +87,7 @@ def page_register():
 @app.route("/register", methods=['POST'])
 def register():
     session.pop("utilisateur",None)
+    session.pop("id",None)
     #recuperation des donnee de la requete post, c est en json.
     donnee = request.form
     #verification des champs, si ils sont vides
@@ -92,6 +114,7 @@ def register():
 @app.route("/verif_login", methods=['POST'])
 def verif_login():
     session.pop("utilisateur",None)
+    session.pop("id",None)
     #recuperation des donnee de la requete post, c est en json.
     donnee = request.form
     print(donnee)
@@ -104,6 +127,7 @@ def verif_login():
             password = donnee.get("password")
             #cela supprime la session actuelle
             session["utilisateur"] = pseudo
+            session["id"] = reponse.json().get("id")
             #url_for retourne sur la fonction qui s'appelle home, pas la route
             return redirect(url_for("home"))
         else:
@@ -119,7 +143,20 @@ def verif_login():
         if verif == "OK":
             return """
 
+@app.route("/ajout_film/<int:film_id>")
+def ajout_film(film_id):
+    user_id = session["id"]
+    api_trouver_film = API_URL + f"ajout_film/{user_id}/{film_id}"
+    reponse = requests.get(api_trouver_film)
+    if reponse.status_code == 200:
+        print("film ajouté")
+        flash("film ajouté",'success')
+            
+    else:
+        print("film introuvable")
+        flash("film introuvable",'success')
 
-
+    return redirect(url_for("home"))
+    
 if __name__ == "__main__":
     app.run(host="0.0.0.0",port=int("3000"),debug=True)

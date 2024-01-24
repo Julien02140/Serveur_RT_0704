@@ -10,6 +10,10 @@
 {% if film %}
     <h1>{{ film.title }}</h1>
 
+    <a href="/ajout_film/{{film.id}}">
+        <button type="button">Ajouter le film</button>
+    </a>
+
     <img src="{{ film.poster_path }}" alt="{{ film.title }} Poster">
 
     <p>ID: {{ film.id }}</p>
