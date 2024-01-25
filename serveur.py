@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify, session, url_for, redirect,g, flash
 import requests
 import os
+
 API_URL = "http://localhost:5000/api/"
 
 app = Flask(__name__)

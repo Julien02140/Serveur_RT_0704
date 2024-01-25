@@ -20,6 +20,8 @@
                 <img src="https://image.tmdb.org/t/p/w342/{{ film.poster_path }}" alt="{{ film.title }} Poster">
                 </a>
         {% endfor %}
+{% else %}
+    <p>Vous n'avez aucun film</p>
 {% endif %}
 </body>
 </html>
