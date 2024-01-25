@@ -2,7 +2,8 @@ from flask import Flask, render_template, request, jsonify, session, url_for, re
 import requests
 import os
 
-API_URL = "http://localhost:5000/api/"
+#API_URL = "http://localhost:5000/api/"
+API_URL = "http://api:5000/"
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -34,10 +35,10 @@ def home():
     if g.utilisateur:
         response = requests.get(api_populaire)
         if response.status_code == 200:
-            listes_films = []
+            liste_films = []
             for film in response.json():
-                listes_films.append(film)
-            return render_template("home.html",utilisateur=session["utilisateur"],id=session["id"],films_populaires=listes_films)
+                liste_films.append(film)
+            return render_template("home.html",utilisateur=session["utilisateur"],id=session["id"],films_populaires=liste_films)
     return redirect(url_for("run"))
 
 @app.route('/description/<int:film_id>')
@@ -173,9 +174,11 @@ def recherche_film():
         reponse = requests.get(api_recherche_film)
         if reponse.status_code == 200:
             liste_films = reponse.json().get("liste_films")
-            return render_template("home.html",films_populaires=liste_films)
+            print("liste ded films :",liste_films)
+            return render_template("home.html",utilisateur=session["utilisateur"],id=session["id"],films_populaires=liste_films)
         else:
-            return "erreur"
+            flash("film introuvable",'success')
+            return render_template("home.html",utilisateur=session["utilisateur"],id=session["id"],films_populaires=liste_films)
 
     
 if __name__ == "__main__":

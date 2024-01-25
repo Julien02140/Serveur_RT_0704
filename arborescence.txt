@@ -1,0 +1,15 @@
+Serveur_RT_0704/
+|__app/
+|    |--serveur.py
+|
+|--templates/
+|   |--description_film.html
+|   |--home.html
+|   |--index.html
+|   |--login.html
+|   |--register.html
+|   |--videotheque.html
+|
+|--aborescence.txt
+|--requirements.txt
+└-- Dockerfile
