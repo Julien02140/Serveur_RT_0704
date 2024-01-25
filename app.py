@@ -35,15 +35,7 @@ def home():
         if response.status_code == 200:
             listes_films = []
             for film in response.json():
-                title = film['title']
-                id = film['id']
-                image = "https://image.tmdb.org/t/p/w342/" + film['poster_path']
-                film_final = {
-                    "id": id,
-                    "title": title,
-                    "image": image
-                }
-                listes_films.append(film_final)
+                listes_films.append(film)
             return render_template("home.html",utilisateur=session["utilisateur"],id=session["id"],films_populaires=listes_films)
     return redirect(url_for("run"))
 
@@ -53,9 +45,6 @@ def description_film(film_id):
     response = requests.get(api_description)
     if response.status_code == 200:
         film = response.json()
-        image = "https://image.tmdb.org/t/p/w342/" + film['poster_path']
-        print ("image path:",image)
-        film['poster_path'] = image
         print("poster_path",film['poster_path'])
         return render_template("description_film.html",film=film)
 
