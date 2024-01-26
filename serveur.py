@@ -48,7 +48,7 @@ def description_film(film_id):
     if response.status_code == 200:
         film = response.json()
         print("poster_path",film['poster_path'])
-        return render_template("description_film.html",film=film)
+        return render_template("description_film.html",utilisateur=session["utilisateur"],id=session["id"],film=film)
 
 @app.route('/videotheque/<int:id>')
 def get_videotheque(id):
@@ -67,7 +67,7 @@ def get_videotheque(id):
                 print("Film ajouté à la liste")
             else:
                 print("film introuvable")
-        return render_template("videotheque.html",films=liste_films) 
+        return render_template("videotheque.html",utilisateur=session["utilisateur"],id=session["id"],films=liste_films) 
     else:
       return "Echec de la requete"
 
@@ -172,13 +172,27 @@ def recherche_film():
         print("mot",mot)
         api_recherche_film = API_URL + f"recherche_film/{mot}"
         reponse = requests.get(api_recherche_film)
+        liste_films = []
         if reponse.status_code == 200:
             liste_films = reponse.json().get("liste_films")
-            print("liste ded films :",liste_films)
-            return render_template("home.html",utilisateur=session["utilisateur"],id=session["id"],films_populaires=liste_films)
+            print("liste des films :",liste_films)
+            return render_template("recherche.html",utilisateur=session["utilisateur"],id=session["id"],films=liste_films)
         else:
-            flash("film introuvable",'success')
-            return render_template("home.html",utilisateur=session["utilisateur"],id=session["id"],films_populaires=liste_films)
+            flash("ereur probleme de connexion",'success')
+            return render_template("home.html",utilisateur=session["utilisateur"],id=session["id"],films=liste_films)
+        
+@app.route("/recherche_genre/<int:id>")
+def recherche_genre(id):
+    api_recherche_genre = API_URL + f"recherche_genre/{id}"
+    reponse = requests.get(api_recherche_genre)
+    liste_films = []
+    if reponse.status_code == 200:
+        liste_films = reponse.json().get("message")
+        print("liste des films :",liste_films)
+        return render_template("recherche.html",utilisateur=session["utilisateur"],id=session["id"],films=liste_films)
+    else:
+        print("erreur de communication")
+        return render_template("home.html",utilisateur=session["utilisateur"],id=session["id"],films=liste_films)
 
     
 if __name__ == "__main__":

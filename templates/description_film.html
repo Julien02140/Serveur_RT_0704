@@ -1,3 +1,4 @@
+{% include 'base_site.html' %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,66 +6,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="../static/css/style.css">
     <title>Description du Film</title>
-    <style>
-        body {
-            background-color: #f8f9fa; /* Couleur de fond */
-            color: #343a40; /* Couleur du texte */
-            padding: 20px; /* Espacement autour du contenu */
-        }
-
-        h1 {
-            color: #007bff; /* Couleur du titre principal */
-            margin-bottom: 20px; /* Marge en bas du titre */
-        }
-
-        .film-container {
-            max-width: 800px; /* Largeur maximale du conteneur */
-            margin: auto; /* Centre le conteneur sur la page */
-            background-color: #fff; /* Couleur de fond du conteneur */
-            padding: 20px; /* Espacement à l'intérieur du conteneur */
-            border-radius: 8px; /* Bordure arrondie du conteneur */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre légère du conteneur */
-        }
-
-        img {
-            max-width: 100%; /* Ajuste la largeur de l'image pour qu'elle ne dépasse pas la largeur du conteneur */
-            border-radius: 8px; /* Bordure arrondie de l'image */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre légère de l'image */
-            margin-bottom: 20px; /* Marge en bas de l'image */
-        }
-
-        .film-info {
-            margin-bottom: 20px; /* Marge en bas des informations du film */
-        }
-
-        .back-link {
-            display: block; /* Affiche le lien comme un bloc pour occuper toute la largeur */
-            margin-top: 20px; /* Marge en haut du lien */
-        }
-    </style>
 </head>
 <body>
     {% if film %}
         <div class="film-container">
-            <h1>{{ film.title }}</h1>
-
-            <a href="/ajout_film/{{film.id}}" class="btn btn-primary">Ajouter le film</a>
+            <h4>{{ film.title }}</h4>
 
             <img src="https://image.tmdb.org/t/p/w342/{{ film.poster_path }}" alt="{{ film.title }} Poster">
 
             <div class="film-info">
-                <p>ID: {{ film.id }}</p>
+                <a href="/ajout_film/{{film.id}}" class="btn btn-primary">Ajouter le film</a>
+                </br>
+                </br>
                 <p>Date de sortie: {{ film.release_date }}</p>
                 <p>Vote moyen: {{ film.vote_average }}</p>
                 <p>Synopsis: {{ film.overview }}</p>
             </div>
-
-            <a href="{{ url_for('home') }}" class="back-link">Retour à la page d'accueil</a>
         </div>
     {% else %}
         <p>Le film n'a pas pu être trouvé.</p>
-        <a href="{{ url_for('home') }}" class="back-link">Retour à la page d'accueil</a>
     {% endif %}
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

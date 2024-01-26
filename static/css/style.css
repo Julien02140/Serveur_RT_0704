@@ -1,0 +1,72 @@
+body {
+    background: linear-gradient(to right, #4CAF50, #008CBA); /* Couleur de fond */
+    color: #343a40; /* Couleur du texte */
+    padding: 20px; /* Espacement autour du contenu */
+}
+
+h1 {
+    color: #363636; 
+    margin-bottom: 20px; 
+}
+
+.film-container {
+    max-width: 800px; /* Largeur maximale du conteneur */
+    margin: auto; /* Centre le conteneur sur la page */
+    background-color: #ffffff; /* Couleur de fond du conteneur */
+    padding: 20px; /* Espacement à l'intérieur du conteneur */
+    border-radius: 8px; /* Bordure arrondie du conteneur */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre légère du conteneur */
+}
+
+img {
+    max-width: 100%; /* Ajuste la largeur de l'image pour qu'elle ne dépasse pas la largeur du conteneur */
+    border-radius: 8px; /* Bordure arrondie de l'image */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre légère de l'image */
+    margin-bottom: 20px; /* Marge en bas de l'image */
+}
+
+.film-info {
+    margin-bottom: 20px; /* Marge en bas des informations du film */
+}
+
+.film-list {
+    list-style: none; /* Supprime les puces de la liste */
+    padding: 0;  /*Supprime le remplissage de la liste */
+    display: flex; /* Affiche les éléments en ligne (flexbox) */
+    flex-wrap: wrap; /* Permet le passage à la ligne des éléments si nécessaire */
+    justify-content: flex-start; /* Espace équitablement les éléments */
+}
+
+.film-list li {
+    margin: 0 20px 10px 0; /* Ajoute une marge à droite et en bas de chaque élément */
+}
+
+.film-list-item {
+    width: 200px; /* Ajustez la largeur des éléments en fonction de vos besoins */
+    margin: 10px;
+    box-shadow: 0 4px 8px rgba(255, 0, 0, 0); /* Ajoutez une ombre douce */
+    background-color: #85ffae31;
+    border-radius: 8px;
+}
+
+.film-list-item img {
+    max-width: 100%; /* Ajuste la largeur de l'image pour qu'elle ne dépasse pas la largeur du conteneur parent */
+    border-radius: 8px; /* Ajoute une bordure arrondie à l'image */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ajoute une ombre légère à l'image */
+}
+
+.back-link {
+    display: block; /* Affiche le lien comme un bloc pour occuper toute la largeur */
+    margin-top: 20px; /* Marge en haut du lien */
+}
+
+.custom-bg {
+    background-color: linear-gradient(to right, #4CAF50, #008CBA); /* Remplacez "yourColor" par la couleur de fond souhaitée */
+}
+
+.film-list-item h5 {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+

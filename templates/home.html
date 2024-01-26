@@ -1,114 +1,23 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">    <title>account</title>
-    <style>
-      body {
-          background-color: #f8f9fa; /* Couleur de fond */
-          color: #343a40; /* Couleur du texte */
-          padding: 20px; /* Espacement autour du contenu */
-      }
-
-      h1 {
-          color: #007bff; /* Couleur du titre principal */
-      }
-
-      p {
-          font-size: 1.25rem; /* Taille du texte du paragraphe */
-      }
-
-      .film-list {
-          list-style: none; /* Supprime les puces de la liste */
-          padding: 0; /* Supprime le remplissage de la liste */
-          display: flex; /* Affiche les éléments en ligne (flexbox) */
-          flex-wrap: wrap; /* Permet le passage à la ligne des éléments si nécessaire */
-          justify-content: space-between; /* Espace équitablement les éléments */
-      }
-
-      .film-item {
-          width: 30%; /* Largeur de chaque élément de la liste */
-          margin-bottom: 20px; /* Marge en bas de chaque élément */
-      }
-
-      .film-item img {
-          max-width: 100%; /* Ajuste la largeur de l'image pour qu'elle ne dépasse pas la largeur du conteneur parent */
-          border-radius: 8px; /* Ajoute une bordure arrondie à l'image */
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ajoute une ombre légère à l'image */
-      }
-  </style>
-  </head>
-  <body>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
-    <nav class="navbar navbar-expand-sm navbar-light bg-light">
-        <a href="#" 
-            class="navbar-brand mb-0 h1">
-            MyMovie
-        </a>
-        <div class="collapse navbar-collapse"
-            id="navbar-nav">
-            <ul class="navbar-nav">
-                <li class="nav-item active">
-                    <a href="/home" class="nav-link">Home</a>
-                </li>
-                <li class="nav-item active">
-                    <a href="/videotheque/{{id}}" class="nav-link">Ma videotheque</a>
-                </li>
-                <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
-                    <ul class="navbar-nav">
-                      <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Mon compte
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarDarkDropdownMenuLink">
-                          <li><a class="dropdown-item" href="#">Paramètres</a></li>
-                          <li><a class="dropdown-item" href="{{ url_for('supprime_session') }}">Déconnexion</a></li>
-                        </ul>
-                      </li>
-                    </ul>
-                  </div>     
-            </ul> 
-        </div>
-        <form class="d-flex" method="POST" action="{{url_for('recherche_film')}}">
-            <input type="text" class="form-control me-2" id="recherche" name="recherche">
-            <button type="submit"
-            class="btn btn-primary">rechercher</button>
-        </form>
-      </nav>
-
-      {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                        {% for category, message in messages %}
-                            <div class="alert alert-{{ category }}" role="alert">
-                                {{message}}
-                            </div>
-                    {% endfor %}
-                {% endif %}
-      {% endwith %}
-
-      <h1>Bienvenue {{ utilisateur }} sur la page d'accueil, votre id est {{id}}</h1>
-      <p>Les films populaires du moment</p>
+{% include 'base_site.html' %}
+<body>
+        <h1>Bienvenue {{ utilisateur }}</h1>
+        <p>Les films populaires du moment</p>
   
-      {% if films_populaires %}
-          <ul class="film-list">
-              {% for film in films_populaires %}
-                  <li class="film-item">
-                      <h3>{{ film.title }}</h3>
-                      <a href="{{url_for('description_film',film_id=film.id)}}">
-                          <img src="https://image.tmdb.org/t/p/w342/{{ film.poster_path }}" alt="{{ film.title }} Poster">
-                      </a>
-                  </li>
-              {% endfor %}
-          </ul>
-      {% else %}
-          <p>Aucun film disponible pour le moment.</p>
-      {% endif %}
-
+        {% if films_populaires %}
+            <ul class="film-list">
+                {% for film in films_populaires %}
+                    <li class="film-list-item" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ film.title }}">
+                        <h5>{{ film.title }}</h5>
+                        <a href="{{url_for('description_film',film_id=film.id)}}">
+                            <img src="https://image.tmdb.org/t/p/w342/{{ film.poster_path }}" alt="{{ film.title }} Poster">
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Aucun film disponible pour le moment.</p>
+        {% endif %}
+    
         <!--
           si je fais par exemple curl https://api.themoviedb.org/3/movie/500/videos?api_key=8770fea03d8b0d550c4b50be1656d5cb. J'obtiens un json, mais c'est la colonne key qui
           donne l'id de la video, j'obtiens la key : RKQIGvULZCI, il me suffit de completer ensuite le lien youtube et j'ai la vidéo en obtenant l'api
