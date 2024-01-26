@@ -194,6 +194,36 @@ def recherche_genre(id):
         print("erreur de communication")
         return render_template("home.html",utilisateur=session["utilisateur"],id=session["id"],films=liste_films)
 
+@app.route("/ajout_note",methods = ['POST'])
+def ajout_note():
+    note = request.form.get('note')
+    id_film = request.form.get('id')
+    user_id = request.form.get('user_id')
+    """api_trouver_film = API_URL + f"trouver_film/{id_film}"
+    reponse_film = requests.get(api_trouver_film)
+    if reponse_film.status_code == 200:
+        film_note = reponse_film.json()"""
+    #return f"Note : {note} pour le film : {id_film} pour l'utilisateur : {user_id}"
+    api_note = API_URL + f"ajout_note/{user_id}/{id_film}/{note}"
+    reponse = requests.get(api_note)
+    if reponse.status_code == 200:
+        message = reponse.json().get('message')
+        film_note = reponse.json().get('film_note')
+        if message == "Note ajoutée":
+            flash("note ajouté","success")
+            return render_template("description_film.html",utilisateur=session["utilisateur"],id=session["id"],film=film_note)
+        elif message == "Note modifiée":
+            flash("Note modifié","success")
+            return render_template("description_film.html",utilisateur=session["utilisateur"],id=session["id"],film=film_note)
+            #les messages flash ne fonctionne pas avec url_for, donc je suis
+            #obligé de retrouver le film
+            #return redirect(url_for('description_film',film_id=id_film))
+        #flash("note ajouté","success")
+        #return render_template("description_film.html",utilisateur=session["utilisateur"],id=session["id"],film=film_note)
+    else:
+        flash("probleme connexion, note non comptabilisé","success")
+        return render_template("description_film.html",utilisateur=session["utilisateur"],id=session["id"],film=film_note)
+
     
 if __name__ == "__main__":
     app.run(host="0.0.0.0",port=int("3000"),debug=True)

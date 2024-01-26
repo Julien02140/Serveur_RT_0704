@@ -21,9 +21,21 @@
                 </br>
                 </br>
                 <p>Date de sortie: {{ film.release_date }}</p>
-                <p>Vote moyen: {{ film.vote_average }}</p>
+                <p>Vote moyen: {{ film.moyenne }}</p>
                 <p>Synopsis: {{ film.overview }}</p>
             </div>
+
+            <h4>Noter le film</h4>
+            <p> Vous pourrez modifier votre note à tout moment</p>
+            <form method="POST" action="/ajout_note">
+                <label for="rating">Note : </label>
+                <input type="number" id="note" name="note" min="1" max="10" required>
+                
+                <input type="hidden" id="id" name="id" value="{{ film.id }}">
+                <input type="hidden" id="user_id" name="user_id" value="{{ id }}">
+                
+                <button class="btn btn-primary" type="submit">Soumettre</button>
+            </form>
         </div>
     {% else %}
         <p>Le film n'a pas pu être trouvé.</p>
