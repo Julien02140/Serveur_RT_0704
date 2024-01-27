@@ -36,9 +36,12 @@ def load_user(user_id):
 
 @app.route('/page_admin')
 @login_required
-def admin_panel():
+def page_admin():
     if current_user.is_admin:
-        return render_template('page_admin.html')
+        response = requests.get(API_URL + f"admin_liste_user")
+        if response.status_code == 200:
+            user_data = response.json()
+            return render_template('page_admin.html',liste_user=user_data)
     else:
         return "page non autorisé"
 
@@ -114,15 +117,22 @@ def page_register():
 def register():
     #recuperation des donnee de la requete post, c est en json.
     donnee = request.form
+    #l'utilisateur peut contourner la restriction web donc 
     #verification des champs, si ils sont vides
     for champ, valeur in donnee.items():
         if valeur.strip() == "":
-            return "Un champ est vide"
+            flash("Un champ est vide","warning")
+            return redirect(url_for("page_register"))
     #On regarde aussi la confirmation du mot de passe
     password = donnee.get("password")
     confirm_password = donnee.get("confirm_password")
     if password != confirm_password:
-        return "le mot de passe de confirmation n'est pas le même"
+        flash("le mot de passe de confirmation n'est pas le même", "warning")
+        return redirect(url_for("page_register"))
+    #on regarde si le mot de passe est assez sécurisé
+    if len(password) < 8 :
+        flash("Un champ est vide","warning")
+        return redirect(url_for("page_register"))
     
     reponse = requests.post(API_URL + "register_user",donnee)
     if reponse.status_code == 200:
@@ -130,8 +140,14 @@ def register():
         if(reponse_api == "Utilisateur ajouté"): 
             flash("compte cree",'success')
             return redirect(url_for("page_login"))
-        else:
-            return "problème sur l'api"
+        elif(reponse_api == "problème"):
+            pseudo_verif = reponse.json().get("message_pseudo")
+            mail_verif = reponse.json().get("message_mail")
+            if(pseudo_verif == "pseudo déja utilisé"):
+                flash(pseudo_verif,'warning')
+            if (mail_verif == "mail déja utilisé" ):
+                flash(mail_verif,'warning')
+            return redirect(url_for("page_register"))
     else:
       return "Echec de l'inscription, problème de connexion"
 
@@ -160,14 +176,6 @@ def verif_login():
             return "pseudo ou mot de passe faux"
     else:
         return "Echec de la requete vers l'api"
-
-    # Faites une requête à l'API pour qu'elle verifie si le peudo et le mdp est correct
-    """
-    response = requests.get(API_URL + "verif_user")
-    if response.status_code == 200:
-        verif = response.txt
-        if verif == "OK":
-            return """
     
 @app.route("/supprimer_film/<int:film_id>")
 @login_required
@@ -262,6 +270,20 @@ def ajout_note():
         flash("probleme connexion, note non comptabilisé","success")
         return render_template("description_film.html",film=film_note)
 
-    
+@app.route("/supprimer_utilisateur/<int:user_id>")
+def supprimer_utilisateur(user_id):
+    api_supprimer_utilisateur = API_URL + f"supprimer_utilisateur/{user_id}"
+    reponse = requests.get(api_supprimer_utilisateur)
+    if reponse.status_code == 200:
+        if reponse.json().get("message") == "Utilisateur supprimé":
+            flash("Utilisateur supprimer","success")
+            return redirect(url_for("page_admin"))
+        else:
+            flash("erreur utilisateur non trouvé","warning")
+            return redirect(url_for("page_admin"))
+    else:
+        flash("problème avec l'api","warning")
+        return redirect(url_for("page_admin"))
+        
 if __name__ == "__main__":
     app.run(host="0.0.0.0",port=int("3000"),debug=True)

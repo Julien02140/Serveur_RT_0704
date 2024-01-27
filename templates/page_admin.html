@@ -1,5 +1,26 @@
 {% include 'base_site.html' %}
 <body>
-    <h1>Liste utilisateur</h1>
+    <h1>Liste utilisateurs</h1>
+    {% if liste_user %}
+    <ul class="film-list">
+        {% for user in liste_user %}
+            <li class="film-list-item" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ user.nom }}">
+                {% if user.id != 0 %}
+                    <a href="/supprimer_utilisateur/{{user.id}}">
+                        <button type="button" class="btn btn-primary">supprimer l'utilisateur</button>
+                    </a>
+                {% endif %}
+                <h5>{{ user.id }}</h5>
+                <h5>{{ user.nom }}</h5>
+                <h5>{{ user.prenom }}</h5>
+                <h5>{{ user.age }}</h5>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Aucun utilisateur inscrit sur le site</p>
+{% endif %}
+
+    <h1>Ajouter un nouveau film sur le site</h1>
 </body>
 </html>

@@ -8,6 +8,16 @@
       <link rel="stylesheet" href="../static/css/style_form.css">
 </head>
 <body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}" role="alert">
+                    {{message}}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
     <div class="container">
         <h2>Inscription</h2>
         <form method="POST" action="/register">
