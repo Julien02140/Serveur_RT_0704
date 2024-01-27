@@ -1,6 +1,6 @@
 {% include 'base_site.html' %}
 <body>
-        <h1>Bienvenue {{ utilisateur }}</h1>
+        <h1>Bienvenue {{ current_user.name }}</h1>
         <p>Les films populaires du moment</p>
   
         {% if films_populaires %}

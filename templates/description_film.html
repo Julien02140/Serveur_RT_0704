@@ -22,6 +22,7 @@
                 </br>
                 <p>Date de sortie: {{ film.release_date }}</p>
                 <p>Vote moyen: {{ film.moyenne }}</p>
+                <p>Nombre de vote : {{film.vote_count + film.nb_vote}}</p>
                 <p>Synopsis: {{ film.overview }}</p>
             </div>
 
@@ -32,8 +33,6 @@
                 <input type="number" id="note" name="note" min="1" max="10" required>
                 
                 <input type="hidden" id="id" name="id" value="{{ film.id }}">
-                <input type="hidden" id="user_id" name="user_id" value="{{ id }}">
-                
                 <button class="btn btn-primary" type="submit">Soumettre</button>
             </form>
         </div>
