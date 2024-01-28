@@ -89,25 +89,28 @@ def description_film(film_id):
 @app.route('/videotheque/<int:id>')
 @login_required
 def videotheque(id):
-    api_videotheque = API_URL + f"videotheque/{id}"
-    reponse1 = requests.get(api_videotheque)
-    liste_films = []
-    if reponse1.status_code == 200:
-        liste_films_id = reponse1.json()["liste_films"]
-        print("voici les id : ",liste_films_id)
-        for film_id in liste_films_id:
-            print("film_id", film_id)
-            api_trouver_film = API_URL + f"trouver_film/{film_id}"
-            reponse2 = requests.get(api_trouver_film)
-            if reponse2.status_code == 200:
-                liste_films.append(reponse2.json())
-                print("Film ajouté à la liste")
-            else:
-                print("film introuvable")
-        return render_template("videotheque.html",films=liste_films)  
-        
+    if current_user.id == id:
+        api_videotheque = API_URL + f"videotheque/{id}"
+        reponse1 = requests.get(api_videotheque)
+        liste_films = []
+        if reponse1.status_code == 200:
+            liste_films_id = reponse1.json()["liste_films"]
+            print("voici les id : ",liste_films_id)
+            for film_id in liste_films_id:
+                print("film_id", film_id)
+                api_trouver_film = API_URL + f"trouver_film/{film_id}"
+                reponse2 = requests.get(api_trouver_film)
+                if reponse2.status_code == 200:
+                    liste_films.append(reponse2.json())
+                    print("Film ajouté à la liste")
+                else:
+                    print("film introuvable")
+            return render_template("videotheque.html",films=liste_films)  
+            
+        else:
+            return render_template("videotheque.html")
     else:
-      return render_template("videotheque.html")
+        return ("accès non autorisé")
       
 
 @app.route("/page_register")
@@ -245,46 +248,53 @@ def recherche_genre(id):
 @login_required
 def ajout_note():
     note = request.form.get('note')
-    id_film = request.form.get('id')
-    """api_trouver_film = API_URL + f"trouver_film/{id_film}"
-    reponse_film = requests.get(api_trouver_film)
-    if reponse_film.status_code == 200:
-        film_note = reponse_film.json()"""
-    #return f"Note : {note} pour le film : {id_film} pour l'utilisateur : {user_id}"
-    api_note = API_URL + f"ajout_note/{current_user.id}/{id_film}/{note}"
-    reponse = requests.get(api_note)
-    if reponse.status_code == 200:
-        message = reponse.json().get('message')
-        film_note = reponse.json().get('film_note')
-        if message == "Note ajoutée":
-            flash("note ajouté","success")
-            return render_template("description_film.html",film=film_note)
-        elif message == "Note modifiée":
-            flash("Note modifié","success")
-            return render_template("description_film.html",film=film_note)
+    if note > 0 and note <= 10:
+        id_film = request.form.get('id')
+        """api_trouver_film = API_URL + f"trouver_film/{id_film}"
+        reponse_film = requests.get(api_trouver_film)
+        if reponse_film.status_code == 200:
+            film_note = reponse_film.json()"""
+        #return f"Note : {note} pour le film : {id_film} pour l'utilisateur : {user_id}"
+        api_note = API_URL + f"ajout_note/{current_user.id}/{id_film}/{note}"
+        reponse = requests.get(api_note)
+        if reponse.status_code == 200:
+            message = reponse.json().get('message')
+            film_note = reponse.json().get('film_note')
+            if message == "Note ajoutée":
+                flash("note ajouté","success")
+                return render_template("description_film.html",film=film_note)
+            elif message == "Note modifiée":
+                flash("Note modifié","success")
+                return render_template("description_film.html",film=film_note)
             #les messages flash ne fonctionne pas avec url_for, donc je suis
             #obligé de retrouver le film
             #return redirect(url_for('description_film',film_id=id_film))
         #flash("note ajouté","success")
         #return render_template("description_film.html",utilisateur=session["utilisateur"],id=session["id"],film=film_note)
+        else:
+            flash("probleme connexion, note non comptabilisé","success")
+            return render_template("description_film.html",film=film_note)
     else:
-        flash("probleme connexion, note non comptabilisé","success")
-        return render_template("description_film.html",film=film_note)
+        return "vous avez essayé de mettre une note interdite"
 
 @app.route("/supprimer_utilisateur/<int:user_id>")
+@login_required
 def supprimer_utilisateur(user_id):
-    api_supprimer_utilisateur = API_URL + f"supprimer_utilisateur/{user_id}"
-    reponse = requests.get(api_supprimer_utilisateur)
-    if reponse.status_code == 200:
-        if reponse.json().get("message") == "Utilisateur supprimé":
-            flash("Utilisateur supprimer","success")
-            return redirect(url_for("page_admin"))
+    if current_user.is_admin:
+        api_supprimer_utilisateur = API_URL + f"supprimer_utilisateur/{user_id}"
+        reponse = requests.get(api_supprimer_utilisateur)
+        if reponse.status_code == 200:
+            if reponse.json().get("message") == "Utilisateur supprimé":
+                flash("Utilisateur supprimer","success")
+                return redirect(url_for("page_admin"))
+            else:
+                flash("erreur utilisateur non trouvé","warning")
+                return redirect(url_for("page_admin"))
         else:
-            flash("erreur utilisateur non trouvé","warning")
+            flash("problème avec l'api","warning")
             return redirect(url_for("page_admin"))
     else:
-        flash("problème avec l'api","warning")
-        return redirect(url_for("page_admin"))
+        return ("non autorisé")
 
 @app.route("/recherche_film_TMDB", methods = ['POST'])
 @login_required
