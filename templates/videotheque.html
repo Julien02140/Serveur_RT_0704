@@ -2,22 +2,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <body>
-{% if films %}
-    <ul class="film-list">
-        {% for film in films %}
-            <li class="film-list-item">
-                <a href="/supprimer_film/{{film.id}}">
-                    <button type="button" class="btn btn-primary">supprimer le film</button>
-                </a>
-                <h5>{{ film.title }}</h5>
-                <a href="{{url_for('description_film',film_id=film.id)}}">
-                <img src="https://image.tmdb.org/t/p/w342/{{ film.poster_path }}" alt="{{ film.title }} Poster">
-                </a>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>Vous n'avez aucun film dans votre videotheque</p>
-{% endif %}
-
+<h5>Films MyMovie :</h5>
+    {% if films %}
+        <ul class="film-list">
+            {% for film in films %}
+                <li class="film-list-item">
+                    <a href="/supprimer_film/{{film.id}}">
+                        <button type="button" class="btn btn-primary">supprimer le film</button>
+                    </a>
+                    <h5>{{ film.title }}</h5>
+                    <a href="{{url_for('description_film',film_id=film.id)}}">
+                    <img src="https://image.tmdb.org/t/p/w342/{{ film.poster_path }}" alt="{{ film.title }} Poster">
+                    </a>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Vous n'avez aucun film dans votre videotheque</p>
+    {% endif %}
+<h5>Films personelle :</h5>
+    <a href="/page_ajout_film_perso">
+        <button type="button" class="btn btn-primary">ajouter film personelle</button>
+    </a>
+    </br>
+    </br>
+    {% if films_perso %}
+        <ul class="film-list">
+            {% for film in films_perso %}
+                <li class="film-list-item">
+                    <a href="/supprimer_film/{{film.id_user}}">
+                        <button type="button" class="btn btn-primary">supprimer le film</button>
+                    </a>
+                    <h5>{{ film.nom }}</h5>
+                    <a href="{{url_for('description_film',film_id=film.id_user)}}">
+                    <img src="{{ film.poster_path }}" alt="{{ film.nom }} Poster">
+                    </a>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Vous n'avez aucun film personelle votre videotheque</p>
+    {% endif %}
 </body>
 </html>

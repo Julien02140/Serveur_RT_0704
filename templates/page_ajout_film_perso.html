@@ -1,0 +1,36 @@
+{% include 'base_site.html' %}
+<body>
+    <style>
+        .form_perso {
+            background-color: rgba(196, 196, 196, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+        }
+    </style>
+    <div class="container">
+        <h2>Nouveau film perso</h2>
+        <form class="form_perso" method="POST" action="/ajout_film_perso" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="pseudo" class="form-label">Nom:</label>
+                <input type="text" class="form-control" id="nom" name="nom" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="lastname" class="form-label">Date de sortie</label>
+                <input type="text" class="form-control" id="date" name="date" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="firstname" class="form-label">synospsis</label>
+                <input type="text" class="form-control" id="synospsis" name="synospsis" required>
+            </div>
+            <div class="mb-3">
+                <label for="image">Image poster</label>
+                <input type="file" id="image" name="image" accept="image/*" required>
+            </div>
+            <button type="submit" class="btn btn-primary">ajouter film</button>
+        </form>
+    </br>
+    </div>
+</body>
+</html>

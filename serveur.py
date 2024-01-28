@@ -9,6 +9,7 @@ API_URL = "http://api:5000/"
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
+app.static_folder = 'static' #pour les images
 login_manager = LoginManager(app)
 
 #modèle utilisateur
@@ -90,6 +91,7 @@ def description_film(film_id):
 @login_required
 def videotheque(id):
     if current_user.id == id:
+        films_perso = liste_film_perso()
         api_videotheque = API_URL + f"videotheque/{id}"
         reponse1 = requests.get(api_videotheque)
         liste_films = []
@@ -105,7 +107,7 @@ def videotheque(id):
                     print("Film ajouté à la liste")
                 else:
                     print("film introuvable")
-            return render_template("videotheque.html",films=liste_films)  
+            return render_template("videotheque.html",films=liste_films,films_perso=films_perso)  
             
         else:
             return render_template("videotheque.html")
@@ -334,6 +336,58 @@ def ajout_film_TMDB():
                 return redirect(url_for("page_admin")) 
         else:
             return "erreur"
+        
+@app.route("/page_ajout_film_perso")
+def page_ajout_film_perso():
+    return render_template("page_ajout_film_perso.html")
+
+@app.route("/ajout_film_perso",methods=['POST'])
+def ajout_film_perso():
+    print("AJOUT FILM PERSO")
+    if request.method == 'POST':
+        print("DANS POST PERSO")
+        # Récupérer les données du formulaire
+        nom = request.form.get('nom')
+        date = request.form.get('date')
+        synopsis = request.form.get('synospsis')
+        print("SYNOPSIS :",synopsis)
+        print("DATE :",date)
+        print("NOM :", nom)
+        image_path = "la"
+
+        #chemin_fichier = "static/image"
+
+        if 'image' in request.files:
+            image = request.files['image']
+            image_path = os.path.join("static/image", f"{nom}_{date}.jpg")
+            image.save(image_path)
+
+        payload = {
+            'id_user' : current_user.id,
+            'nom': nom,
+            'date': date,
+            'synopsis': synopsis,
+            'poster_path': "/" + image_path
+        }
+
+        api_ajout_film_perso = API_URL + "ajout_film_perso"
+        reponse = requests.post(api_ajout_film_perso, json = payload)
+        
+        if reponse.status_code == 200:
+            return "Le film a été ajouté avec succès à l'API."
+        else:
+            return "Erreur lors de l'ajout du film à l'API."
+
+    return "erreur méthode non valide"
+
+def liste_film_perso():
+    api_liste_film_perso = API_URL + f"/liste_film_perso/{current_user.id}"
+    reponse = requests.get(api_liste_film_perso)
+    if reponse.status_code == 200:
+        data = reponse.json()
+        return data
+
+    
         
 if __name__ == "__main__":
     app.run(host="0.0.0.0",port=int("3000"),debug=True)
