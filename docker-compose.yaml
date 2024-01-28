@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  web:
+    build:
+      context: ./Serveur_RT_0704  # chemin du dockerfile
+    ports:
+      - "3000:3000"  # 1: port hote 2: port conteneur
+    depends_on:
+      - api  # le service api doit etre demarrer avant le service web
+    networks:
+      - network_rt0704  # le reseau commun
+    volumes:
+      - ./Serveur_RT_0704:/Serveur_RT_0704 #le volume partagé entre le conteneur et l'hote
+  api:
+    build:
+      context: ./Api_RT_0704 
+    ports:
+      - "5000:5000" 
+    networks:
+      - network_rt0704
+    volumes:
+      - ./Api_RT_0704:/Api_RT_0704
+
+networks:
+  network_rt0704: 
+    driver: bridge

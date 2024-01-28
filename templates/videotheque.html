@@ -29,7 +29,7 @@
         <ul class="film-list">
             {% for film in films_perso %}
                 <li class="film-list-item">
-                    <a href="/supprimer_film/{{film.id_user}}">
+                    <a href="/supprimer_film_perso/{{film.id}}">
                         <button type="button" class="btn btn-primary">supprimer le film</button>
                     </a>
                     <h5>{{ film.nom }}</h5>

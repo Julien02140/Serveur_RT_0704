@@ -381,13 +381,24 @@ def ajout_film_perso():
     return "erreur méthode non valide"
 
 def liste_film_perso():
-    api_liste_film_perso = API_URL + f"/liste_film_perso/{current_user.id}"
+    api_liste_film_perso = API_URL + f"liste_film_perso/{current_user.id}"
     reponse = requests.get(api_liste_film_perso)
     if reponse.status_code == 200:
         data = reponse.json()
         return data
 
+@app.route("/supprimer_film_perso/<int:film_id>")
+def supprimer_film_perso(film_id):
+    api_supprimer_film_perso = API_URL + f"supprimer_film_perso/{film_id}"
     
+    reponse = requests.get(api_supprimer_film_perso)
+    if reponse.status_code == 200:
+        flash("film perso supprimé","success")
         
+    else:
+        flash("erreur film perso non supprimé","warning")
+
+    return render_template("home.html")   
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0",port=int("3000"),debug=True)
