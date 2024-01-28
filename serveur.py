@@ -144,7 +144,7 @@ def register():
     if reponse.status_code == 200:
         reponse_api = reponse.json().get("message")
         if(reponse_api == "Utilisateur ajouté"): 
-            flash("compte cree",'success')
+            flash("compte crée",'success')
             return redirect(url_for("page_login"))
         elif(reponse_api == "problème"):
             pseudo_verif = reponse.json().get("message_pseudo")
@@ -250,7 +250,7 @@ def recherche_genre(id):
 @login_required
 def ajout_note():
     note = request.form.get('note')
-    if note > 0 and note <= 10:
+    if int(note) > 0 and int(note) <= 10:
         id_film = request.form.get('id')
         """api_trouver_film = API_URL + f"trouver_film/{id_film}"
         reponse_film = requests.get(api_trouver_film)
@@ -398,7 +398,6 @@ def supprimer_film_perso(film_id):
     else:
         flash("erreur film perso non supprimé","warning")
 
-    return render_template("home.html")   
-
+        return redirect(url_for("home"))
 if __name__ == "__main__":
     app.run(host="0.0.0.0",port=int("3000"),debug=True)
