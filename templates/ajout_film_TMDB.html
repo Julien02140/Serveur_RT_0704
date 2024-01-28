@@ -1,0 +1,28 @@
+{% include 'base_site.html' %}
+<body>
+        <h1>Bienvenue {{ current_user.name }}</h1>
+        <p>Les films trouvés</p>
+  
+        {% if films %}
+            <ul class="film-list">
+                {% for film in films %}
+                    <li class="film-list-item" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ film.title }}">
+                        <form method="post" action="/ajouter_film_TMDB">
+                            <input type="hidden" name="film_json" value="{{film}}">
+                            <button type="submit" class="btn btn-primary">ajouter le film</button>
+                        </form>
+                        <h5>{{film}}</h5>
+                        <h5>{{ film.title }}</h5>
+                        <h5>{{film.id}}</h5>
+                        <a href="{{url_for('description_film',film_id=film.id)}}">
+                            <img src="https://image.tmdb.org/t/p/w342/{{ film.poster_path }}" alt="{{ film.title }} Poster">
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Aucun film trouvé</p>
+        {% endif %}
+    
+</body>
+</html>

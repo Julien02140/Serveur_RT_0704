@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify, session, url_for, re
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import requests
 import os
+import json
 
 #API_URL = "http://localhost:5000/api/"
 API_URL = "http://api:5000/"
@@ -284,6 +285,45 @@ def supprimer_utilisateur(user_id):
     else:
         flash("problème avec l'api","warning")
         return redirect(url_for("page_admin"))
+
+@app.route("/recherche_film_TMDB", methods = ['POST'])
+@login_required
+def recherche_film_TMDB():
+    if current_user.is_admin and request.method == 'POST':
+        donne = request.form
+        mot = donne.get("recherche_TMDB")
+        api_rechercher_film_TMDB = API_URL + f"recherche_film_TMDB/{mot}"
+        reponse = requests.get(api_rechercher_film_TMDB)
+        if reponse.status_code == 200:
+                liste_films = reponse.json()
+                return render_template("ajout_film_TMDB.html",films = liste_films)
+        else:
+            return render_template("ajout_film_TMDB.html") 
+    else:
+        return "erreur sur l'api"
+
+#pour du json il faut du post, pas recomadé de mettre le json
+#dans l'url
+@app.route("/ajouter_film_TMDB", methods = ['POST'])
+@login_required
+def ajout_film_TMDB():
+    if current_user.is_admin and request.method == 'POST':
+        data = request.form['film_json']
+        print("AJOUTER FILM TMDB DATA :",data)
+        print("MEEEERDE")
+        print("ESSAI TITRE",data['title'])
+        api_ajout_film_TMDB = API_URL + f"ajouter_film_TMDB"
+        reponse = requests.post(api_ajout_film_TMDB, json = data)
+        if reponse.status_code == 200:
+            message = reponse.json().get('message')
+            if message == "OK":
+                flash("film ajouté à la base de donnée", "success")
+                return redirect(url_for("page_admin"))
+            else :
+                flash("erreur film non ajouté", "warning")
+                return redirect(url_for("page_admin")) 
+        else:
+            return "erreur"
         
 if __name__ == "__main__":
     app.run(host="0.0.0.0",port=int("3000"),debug=True)

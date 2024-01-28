@@ -21,6 +21,11 @@
     <p>Aucun utilisateur inscrit sur le site</p>
 {% endif %}
 
-    <h1>Ajouter un nouveau film sur le site</h1>
+    <h1>Ajouter un nouveau film TMDB sur le site</h1>
+    <form class="d-flex" method="POST" action="{{url_for('recherche_film_TMDB')}}">
+        <input type="text" class="form-control me-2" id="recherche_TMDB" name="recherche_TMDB">
+        <button type="submit"
+        class="btn btn-primary">rechercher</button>
+    </form>
 </body>
 </html>
