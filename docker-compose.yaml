@@ -1,27 +1,28 @@
 version: '3'
 
 services:
-  web:
+  serveur:
     build:
-      context: ./Serveur_RT_0704  # chemin du dockerfile
+      context: .        # racine du serveur
     ports:
-      - "3000:3000"  # 1: port hote 2: port conteneur
+      - "5000:5000"
     depends_on:
-      - api  # le service api doit etre demarrer avant le service web
-    networks:
-      - network_rt0704  # le reseau commun
-    volumes:
-      - ./Serveur_RT_0704:/Serveur_RT_0704 #le volume partagé entre le conteneur et l'hote
-  api:
-    build:
-      context: ./Api_RT_0704 
-    ports:
-      - "5000:5000" 
+      - api
     networks:
       - network_rt0704
     volumes:
-      - ./Api_RT_0704:/Api_RT_0704
+      - ./:/app           # monte le dossier courant vers /app dans le conteneur
+
+  api:
+    build:
+      context: ./api
+    ports:
+      - "5001:5000"       # l'API écoute sur 5000 dans le conteneur mais exposée sur 5001
+    networks:
+      - network_rt0704
+    volumes:
+      - ./api:/app
 
 networks:
-  network_rt0704: 
+  network_rt0704:
     driver: bridge

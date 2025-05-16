@@ -17,25 +17,16 @@ pipeline {
             }
         }
 
-        stage('Build Serveur') {
+        stage('Build Serveur et API') {
             steps {
-                sh 'echo Build du Serveur...'
+                sh 'docker-compose build'
                 // Commandes de build du Serveur ici
-            }
-        }
-
-        stage('Build API') {
-            steps {
-                dir('api') {
-                    sh 'echo Build de l\'API...'
-                    // Commandes de build de l’API ici
-                }
             }
         }
 
         stage('Déploiement') {
             steps {
-                sh 'echo Déploiement en cours...'
+                sh 'docker-compose up -d'
                 // Commandes de déploiement pour Serveur + API
             }
         }
