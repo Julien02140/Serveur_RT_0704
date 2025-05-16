@@ -2,31 +2,41 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
+        stage('Checkout - Serveur') {
             steps {
-                // Récupérer le code depuis ton dépôt Git
-                git 'https://github.com/Julien02140/Serveur_RT_0704.git'
+                // Checkout principal (déjà automatique si Jenkinsfile dans ce repo)
+                git url: 'https://github.com/Julien02140/Serveur_RT_0704.git', branch: 'main'
             }
         }
 
-        stage('Build') {
+        stage('Checkout - API') {
             steps {
-                // Exemple de build avec Maven
-                sh "'/usr/share/maven/bin/mvn' clean install"
+                dir('api') { // On met l'API dans un sous-dossier pour pas écraser le serveur
+                    git url: 'https://github.com/Julien02140/Api_RT_0704.git', branch: 'main'
+                }
             }
         }
 
-        stage('Test') {
+        stage('Build Serveur') {
             steps {
-                // Exemple de test
-                echo 'Exécution des tests ici'
+                sh 'echo Build du Serveur...'
+                // Commandes de build du Serveur ici
             }
         }
 
-        stage('Deploy') {
+        stage('Build API') {
             steps {
-                // Exemple de déploiement
-                echo 'Déploiement sur le serveur'
+                dir('api') {
+                    sh 'echo Build de l\'API...'
+                    // Commandes de build de l’API ici
+                }
+            }
+        }
+
+        stage('Déploiement') {
+            steps {
+                sh 'echo Déploiement en cours...'
+                // Commandes de déploiement pour Serveur + API
             }
         }
     }
